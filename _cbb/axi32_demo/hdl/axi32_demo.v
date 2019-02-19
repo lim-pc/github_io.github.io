@@ -52,7 +52,15 @@ module axi32_demo #(
         output  wire [datawidth-1:0]        s_axi_rdata_out         ,
         output  wire [1:0]                  s_axi_rresp_out         ,
         output  wire                        s_axi_rvalid_out        ,
-        input   wire                        s_axi_rready_in
+        input   wire                        s_axi_rready_in         ,
+
+        // Control interface
+        output  wire                        control_0_out           ,
+        output  wire                        control_1_out           ,
+
+        // Status interface
+        input   wire                        status_0_in             ,
+        input   wire                        status_1_in
     );
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -76,38 +84,46 @@ module axi32_demo #(
 //--------------------------------------------------------------------------------
 
     axi32_demo_cell #(
-        .datawidth                  (datawidth              ),
-        .addrwidth                  (addrwidth              )
+        .datawidth                          (datawidth              ),
+        .addrwidth                          (addrwidth              )
     ) axi32_demo_cell_inst (
-        .s_axi_clk_in               (s_axi_clk_in           ),
-        .s_axi_reset_n_in           (s_axi_reset_n_in       ),
+        .s_axi_clk_in                       (s_axi_clk_in           ),
+        .s_axi_reset_n_in                   (s_axi_reset_n_in       ),
 
         // Write address channel
-        .s_axi_awaddr_in            (s_axi_awaddr_in        ),
-        .s_axi_awvalid_in           (s_axi_awvalid_in       ),
-        .s_axi_awready_out          (s_axi_awready_out      ),
+        .s_axi_awaddr_in                    (s_axi_awaddr_in        ),
+        .s_axi_awvalid_in                   (s_axi_awvalid_in       ),
+        .s_axi_awready_out                  (s_axi_awready_out      ),
 
         // Write data channel
-        .s_axi_wdata_in             (s_axi_wdata_in         ),
-        .s_axi_wstrb_in             (s_axi_wstrb_in         ),
-        .s_axi_wvalid_in            (s_axi_wvalid_in        ),
-        .s_axi_wready_out           (s_axi_wready_out       ),
+        .s_axi_wdata_in                     (s_axi_wdata_in         ),
+        .s_axi_wstrb_in                     (s_axi_wstrb_in         ),
+        .s_axi_wvalid_in                    (s_axi_wvalid_in        ),
+        .s_axi_wready_out                   (s_axi_wready_out       ),
 
         // Write response channel
-        .s_axi_bresp_out            (s_axi_bresp_out        ),
-        .s_axi_bvalid_out           (s_axi_bvalid_out       ),
-        .s_axi_bready_in            (s_axi_bready_in        ),
+        .s_axi_bresp_out                    (s_axi_bresp_out        ),
+        .s_axi_bvalid_out                   (s_axi_bvalid_out       ),
+        .s_axi_bready_in                    (s_axi_bready_in        ),
 
         // Read address channel
-        .s_axi_araddr_in            (s_axi_araddr_in        ),
-        .s_axi_arvalid_in           (s_axi_arvalid_in       ),
-        .s_axi_arready_out          (s_axi_arready_out      ),
+        .s_axi_araddr_in                    (s_axi_araddr_in        ),
+        .s_axi_arvalid_in                   (s_axi_arvalid_in       ),
+        .s_axi_arready_out                  (s_axi_arready_out      ),
 
         // Read data channel
-        .s_axi_rdata_out            (s_axi_rdata_out        ),
-        .s_axi_rresp_out            (s_axi_rresp_out        ),
-        .s_axi_rvalid_out           (s_axi_rvalid_out       ),
-        .s_axi_rready_in            (s_axi_rready_in        )
+        .s_axi_rdata_out                    (s_axi_rdata_out        ),
+        .s_axi_rresp_out                    (s_axi_rresp_out        ),
+        .s_axi_rvalid_out                   (s_axi_rvalid_out       ),
+        .s_axi_rready_in                    (s_axi_rready_in        ),
+
+        // Control interface
+        .control_0_out                      (control_0_out          ),
+        .control_1_out                      (control_1_out          ),
+
+        // Status interface
+        .status_0_in                        (status_0_in            ),
+        .status_1_in                        (status_1_in            )
     );
 
 endmodule
