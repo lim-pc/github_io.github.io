@@ -35,6 +35,7 @@
 #### **3.1.3 Type and Subtype类型和子类型子项**
 
 &emsp;&emsp;Type 子项的长度固定是 2 bits，Subtype 子项的长度固定为 4 bits，这两个子项一起定义了 MAC 帧的功能。所有帧分为三类，分别是 控制帧、数据帧和管理帧。每一种帧类型有几种定义的子类型，在数据帧中，Subtype 子项的最高位B7是被定义为 QoS 子项。整体定义如下表：
+
 |Type value [B3:B2]|Type description|Subtype value [B7:B4]|       Subtype description       |
 |:----------------:|:--------------:|:-------------------:|:-------------------------------:|
 |        00        |   Management   |        0000         |Association Request              |
