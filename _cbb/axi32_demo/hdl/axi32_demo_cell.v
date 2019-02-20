@@ -169,7 +169,7 @@ module axi32_demo_cell #(
             end
             else
             begin
-                gc_reg[15:0] <= 16'd0;
+                gc_reg[31:16] <= 16'd0;
                 s_axi_wr_addr_error <= 1'b0;
             end
         end
@@ -189,12 +189,10 @@ module axi32_demo_cell #(
     // write address ready time
     always @(posedge s_axi_clk_in)
     begin
-        if (s_axi_reset_n_in == 1'b0)
-            s_axi_wr_aready <= 1'b0;
-        else if (s_axi_awvalid_in == 1'b1)
+        if (s_axi_awvalid_in == 1'b1)
             s_axi_wr_aready <= 1'b1;
         else
-            s_axi_wr_aready <= s_axi_wr_aready;
+            s_axi_wr_aready <= 1'b0;
     end
 
     // write data delay number select.
@@ -230,12 +228,10 @@ module axi32_demo_cell #(
     // write data ready time
     always @(posedge s_axi_clk_in)
     begin
-        if (s_axi_reset_n_in == 1'b0)
-            s_axi_wr_dready <= 1'b0;
-        else if ((s_axi_wvalid_in == 1'b1) && (s_axi_wr_delay_cnt >= s_axi_wr_delay_num))
+        if ((s_axi_wvalid_in == 1'b1) && (s_axi_wr_delay_cnt >= s_axi_wr_delay_num))
             s_axi_wr_dready <= 1'b1;
         else
-            s_axi_wr_dready <= s_axi_wr_dready;
+            s_axi_wr_dready <= 1'b0;
     end
 
     // write response valid time
@@ -327,12 +323,10 @@ module axi32_demo_cell #(
     // read address ready time
     always @(posedge s_axi_clk_in)
     begin
-        if (s_axi_reset_n_in == 1'b0)
-            s_axi_rd_aready <= 1'b0;
-        else if ((s_axi_arvalid_in == 1'b1) && (s_axi_rd_delay_cnt >= s_axi_wr_delay_num))
+        if ((s_axi_arvalid_in == 1'b1) && (s_axi_rd_delay_cnt >= s_axi_wr_delay_num))
             s_axi_rd_aready <= 1'b1;
         else
-            s_axi_rd_aready <= s_axi_rd_aready;
+            s_axi_rd_aready <= 1'b0;
     end
 
     // read valid time
