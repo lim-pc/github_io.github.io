@@ -107,12 +107,13 @@
 
 #### **3.1.4 To DS and From DS 到DS和从DS子项**
 
-&emsp;&emsp;所有 数据帧的 To DS 和 From DS 子项值含义如下表所示：
+&emsp;&emsp;所有 数据帧的 To DS 和 From DS 子项值含义如下图所示：
 
-|To DS and From DS values|               Meaning              |
-|:----------------------:|:----------------------------------:|
-|To DS = 0，From DS = 0  |包含相同IBSS或是PBSS的数据帧从一个基站发至另一个基站；包含相同基础BSS的数据帧从一个 non-AP 的基站发至另一个 non-AP 的基站；一个在 BSS 内容之外的数据帧|
-|To DS = 1，From DS = 0  ||
+<img src="../_img/To or From DS combinations in Data frames.jpg" />
+
+&emsp;&emsp;所有 管理帧的 To DS 和 From DS 子项值含义如下图所示：
+
+<img src="../_img/To or From DS combinations in Management frames.jpg" />
 
 ## *附言*
 
