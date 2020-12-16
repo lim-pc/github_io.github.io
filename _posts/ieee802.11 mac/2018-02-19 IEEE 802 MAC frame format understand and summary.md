@@ -12,7 +12,7 @@
 
 &emsp;&emsp;IEEE 802.11 MAC 帧中的前面和三个部分（帧控制、段ID、地址1）和最后一个部分（FCS）就构成了最小的帧格式，且是所有的帧必须有的部分（包含了保留类型和子类型）。地址2、地址3、序列控制、地址4、QoS控制、HT控制和帧体等部分仅出现在包含了帧类型和子类型的帧当中。
 
-<img src="../_img/general frame format.jpg" />
+<img src="../../_img/general frame format.jpg" />
 
 ## *3. 802.11 MAC 结构详解*
 
@@ -22,11 +22,11 @@
 
 &emsp;&emsp;IEEE 802.11 MAC 帧中帧控制域的前三个子项分别是 协议版本、类型和子类型。剩下的子项都是由 Type 和 Subtype 的配置内容决定的。当 Type 子项的值不为 1 或是 Subtype 子项的值不为 6 时，帧控制的其他子项分别是 To DS、From DS、More Fragments、Retry、Power Management、More Data、Protected Frame 和 +HTC/Order，具体如下图所示：
 
-<img src="../_img/Frame Control field when Type is not equal to 1 or Subtype is not equal to 6.jpg" />
+<img src="../../_img/Frame Control field when Type is not equal to 1 or Subtype is not equal to 6.jpg" />
 
 &emsp;&emsp;仅当 类型 子项的值为 1 且 子类型 子项的值为 6 时，帧控制的其他子项分别是 Control Frame Extension、Power Management、More Data、Protected Frame 和 +HTC/Order，具体如下图所示：
 
-<img src="../_img/Frame Control field when Type is equal to 1 and Subtype is equal to 6.jpg" />
+<img src="../../_img/Frame Control field when Type is equal to 1 and Subtype is equal to 6.jpg" />
 
 #### **3.1.2 Protocol Version协议版本子项**
 
@@ -109,11 +109,11 @@
 
 &emsp;&emsp;所有 数据帧的 To DS 和 From DS 子项值含义如下图所示：
 
-<img src="../_img/To or From DS combinations in Data frames.jpg" />
+<img src="../../_img/To or From DS combinations in Data frames.jpg" />
 
 &emsp;&emsp;所有 管理帧的 To DS 和 From DS 子项值含义如下图所示：
 
-<img src="../_img/To or From DS combinations in Management frames.jpg" />
+<img src="../../_img/To or From DS combinations in Management frames.jpg" />
 
 ## *附言*
 
