@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Xilinx Simulation Libraries 学习与总结</title>
+        <style>
+</style>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        
+        
+        
+    </head>
+    <body class="vscode-light">
+        <h1 id="xilinx-simulation-libraries-学习与总结">Xilinx Simulation Libraries 学习与总结</h1>
+<hr>
+<h2 id="1-logic-simulation-overview"><strong>1. Logic Simulation Overview</strong></h2>
+<p>Simulation is a process of emulating real design behavior in a software environment. Simulation helps verify the functionality of a design by injecting stimulus and observing the design outputs.</p>
+<p>The process of simulation includes:</p>
+<ul>
+<li>Creating test benches, setting up libraries and specifying the simulation settings for Simulation</li>
+<li>Generating a Netlist (if performing post-synthesis or post-implementation simulation)</li>
+<li>Running a Simulation using Vivado simulator or third party simulators</li>
+</ul>
+<p>The following figure illustrates the simulation flow for a typical design:</p>
+<hr>
+<h2 id="2-simulation-flow"><strong>2. Simulation Flow</strong></h2>
+<p>Simulation can be applied at several points in the design flow. It is one of the first steps after design entry and one of the last steps after implementation as part of verifying the end functionality and performance of the design.</p>
+<img src="file:///f:\documents\Protocol\github_io.github.io-master\_img\Xilinx Simulation Flow.jpg" />
+<hr>
+<h3 id="21-behavioral-simulation-at-the-register-transfer-level"><strong>2.1 Behavioral Simulation at the Register Transfer Level</strong></h3>
+<p>Register Transfer Level (RTL) behavioral simulation can include:</p>
+<ul>
+<li>RTL Code</li>
+<li>Instantiated UNISIM library components</li>
+<li>Instantiated UNIMACRO components</li>
+<li>UNISIM gate-level model (for the Vivado logic analyzer)</li>
+<li>SECUREIP Library</li>
+</ul>
+<p>RTL-level simulation lets you simulate and verify your design prior to any translation made by synthesis or implementation tools. You can verify your designs as a module or an entity, a block, a device, or a system.</p>
+<p>RTL simulation is typically performed to verify code syntax, and to confirm that the code is functioning as intended. In this step, the design is primarily described in RTL and consequently, no timing information is required.</p>
+<p>RTL simulation is not architecture-specific unless the design contains an instantiated device library component. To support instantiation, Xilinx® provides the UNISIM library. When you verify your design at the behavioral RTL you can fix design issues earlier and save design cycles.</p>
+<p>Keeping the initial design creation limited to behavioral code allows for:</p>
+<ul>
+<li>More readable code</li>
+<li>Faster and simpler simulation</li>
+<li>Code portability (the ability to migrate to different device families)</li>
+<li>Code reuse (the ability to use the same code in future designs)</li>
+</ul>
+<hr>
+<h3 id="22-post-synthesis-simulation"><strong>2.2 Post-Synthesis Simulation</strong></h3>
+<p>You can simulate a synthesized netlist to verify that the synthesized design meets the functional requirements and behaves as expected. Although it is not typical, you can perform timing simulation with estimated timing numbers at this simulation point.</p>
+<p>The functional simulation netlist is a hierarchical, folded netlist expanded to the primitive module and entity level; the lowest level of hierarchy consists of primitives and macro primitives.</p>
+<p>These primitives are contained in the UNISIMS_VER library for Verilog, and the UNISIM library for VHDL.</p>
+<hr>
+<h3 id="23-post-implementation-simulation"><strong>2.3 Post-Implementation Simulation</strong></h3>
+<p>You can perform functional or timing simulation after implementation. Timing simulation is the closest emulation to actually downloading a design to a device. It allows you to ensure that the implemented design meets functional and timing requirements and has the expected behavior in the device.</p>
+<hr>
+<p>IMPORTANT! Performing a thorough timing simulation ensures that the completed design is free of defects that could otherwise be missed, such as:</p>
+<ul>
+<li>Post-synthesis and post-implementation functionality changes that are caused by:
+<ul>
+<li>Synthesis properties or constraints that create mismatches (such as full_case and parallel_case)</li>
+<li>UNISIM properties applied in the Xilinx Design Constraints (XDC) file</li>
+<li>The interpretation of language during simulation by different simulators</li>
+</ul>
+</li>
+<li>Dual port RAM collisions</li>
+<li>Missing, or improperly applied timing constraints</li>
+<li>Operation of asynchronous paths
+<ul>
+<li>Functional issues due to optimization techniques</li>
+</ul>
+</li>
+</ul>
+<hr>
+<hr>
+<h2 id="3-simulating-with-third-party-simulators"><strong>3. Simulating with Third-Party Simulators</strong></h2>
+<p>The Vivado® Design Suite supports simulation using third-party tools. Simulation with third-party tools can be performed directly from within the Vivado Integrated Design Environment (IDE) or using a custom external simulation environment.</p>
+<p>The following third-party tools are supported:</p>
+<ul>
+<li>Mentor Graphics Questa Advanced Simulator/ModelSim: Integrated in the Vivado IDE.</li>
+<li>Cadence Incisive Enterprise Simulator (IES): Integrated in the Vivado IDE.</li>
+<li>Synopsys VCS: Integrated in the Vivado IDE.</li>
+<li>Aldec Active-HDL and Rivera-PRO Aldec offers support for these simulators.</li>
+<li>Cadence Xcelium Parallel Simulator: Integrated in the Vivado IDE The Vivado Design Suite User Guide: Using the Vivado IDE (UG893) describes the use of the Vivado IDE.</li>
+</ul>
+<hr>
+<h3 id="31-running-simulation-using-third-party-simulators-with-vivado-ide"><strong>3.1 Running Simulation Using Third Party Simulators with Vivado IDE</strong></h3>
+<hr>
+<p>IMPORTANT! Confirm the compiled library location (the path at which compile_simlib was invoked or the one you specified with the -directory option) before running a third-party simulation</p>
+<hr>
+<p>From the Vivado IDE, you can compile, elaborate, and simulate the design based on the simulation settings and launch the simulator in a separate window.</p>
+<p>When you run simulation prior to synthesizing the design, the simulator runs a behavioral simulation. Following each successful design step (synthesis and implementation), the option to run a functional or timing simulation becomes available. You can initiate a simulation run from the Flow Navigator or by typing in a Tcl command.</p>
+<hr>
+<h3 id="32-running-timing-simulation-using-third-party-tools"><strong>3.2 Running Timing Simulation Using Third-Party Tools</strong></h3>
+<hr>
+<p>TIP: Post-Synthesis timing simulation uses the estimated timing delay from the synthesized netlist. Post-Implementation timing simulation uses actual timing delays.</p>
+<hr>
+<p>When you run Post-Synthesis and Post-Implementation timing simulation, the simulators include:</p>
+<ul>
+<li>Gate-level netlist containing SIMPRIMS library components</li>
+<li>SECUREIP</li>
+<li>Standard Delay Format (SDF) files
+You define the overall design functionality in the beginning. When the design is implemented, accurate timing information is available.</li>
+</ul>
+<p>To create the netlist and SDF, the Vivado Design Suite:</p>
+<ul>
+<li>Calls the netlist writer, write_verilog with the -mode timesim switch and write_sdf(SDF annotator)</li>
+<li>Sends the generated netlist to the target simulator</li>
+</ul>
+<hr>
+<p>IMPORTANT! Post-Synthesis and Post-Implementation timing simulations are supported for Verilog only. There is no support for VHDL timing simulation. If you are a VHDL user, you can run post-synthesis and postimplementation functional simulation (in which case no SDF annotation is required and the simulation netlist uses the UNISIM library). You can create the netlist using the write_vhdl Tcl command. For usage information, refer to the Vivado Design Suite Tcl Command Reference Guide (UG835).</p>
+<hr>
+<hr>
+<h2 id="4-xilinx-simulation-libraries"><strong>4. Xilinx Simulation Libraries</strong></h2>
+<p>You can use Xilinx simulation libraries with any simulator that supports the VHDL-93 and Verilog-2001 language standards. Certain delay and modeling information is built into the libraries; this is required to simulate the Xilinx hardware devices correctly.</p>
+<p>Use non-blocking assignments for blocks within clocking edges. Otherwise, write code using blocking assignments in Verilog. Similarly, use variable assignments for local computations within a process, and use signal assignments when you want data-flow across processes.</p>
+<p>If the data changes at the same time as a clock, it is possible that the simulator will schedule the data input to occur after the clock edge. The data does not go through until the next clock edge, although it is possible that the intent was to have the data clocked in before the first clock edge.</p>
+<p>When you instantiate a component in your design, the simulator must reference a library that describes the functionality of the component to ensure proper simulation. The Xilinx libraries are divided into categories based on the function of the model.</p>
+<p>The following table lists the Xilinx-provided simulation libraries:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Library Name</th>
+<th style="text-align:left">Description</th>
+<th style="text-align:center">VHDL Library Name</th>
+<th style="text-align:center">Verilog Library Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">UNISIM</td>
+<td style="text-align:left">Functional simulation of Xilinx primitives.</td>
+<td style="text-align:center">UNISIM</td>
+<td style="text-align:center">UNISIMS_VER</td>
+</tr>
+<tr>
+<td style="text-align:center">UNIMACRO</td>
+<td style="text-align:left">Functional simulation of Xilinx macros.</td>
+<td style="text-align:center">UNIMACRO</td>
+<td style="text-align:center">UNIMACRO_VER</td>
+</tr>
+<tr>
+<td style="text-align:center">UNIFAST</td>
+<td style="text-align:left">Fast simulation library.</td>
+<td style="text-align:center">UNIFAST</td>
+<td style="text-align:center">UNIFAST_VER</td>
+</tr>
+<tr>
+<td style="text-align:center">SIMPRIM</td>
+<td style="text-align:left">Timing simulation of Xilinx primitives.</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">SIMPRIMS_VER</td>
+</tr>
+<tr>
+<td style="text-align:center">SECUREIP</td>
+<td style="text-align:left">Simulation library for both functional and timing simulation of Xilinx device features, such as the PCIe IP, Gigabit Transceiver etc., You can find the list of IP's under SECUREIP at the following location: '&lt;Vivado_Install_Dir&gt;/data/secureip'</td>
+<td style="text-align:center">SECUREIP</td>
+<td style="text-align:center">SECUREIP</td>
+</tr>
+<tr>
+<td style="text-align:center">XPM</td>
+<td style="text-align:left">Functional simulation of Xilinx primitives</td>
+<td style="text-align:center">XPM</td>
+<td style="text-align:center">XPM</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p>Notes:</p>
+<ol>
+<li>The SIMPRIMS_VER is the logical library name to which the Verilog SIMPRIM physical library is mapped.</li>
+<li>XPM is supported as a pre-compiled IP. Hence, you need not add the source file to the project. For third party
+simulators, the Vivado tools will map to pre-compiled IP generated with compile_simlib.</li>
+</ol>
+<hr>
+<p>IMPORTANT! You must specify different simulation libraries according to the simulation points. There are different gate-level cells in pre- and post-implementation netlists.</p>
+<hr>
+<p>Simulation Points and Relevant Libraries:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Simulation Point</th>
+<th style="text-align:center">UNISIM</th>
+<th style="text-align:center">UNIFAST</th>
+<th style="text-align:center">UNIMACRO</th>
+<th style="text-align:center">SECUREIP</th>
+<th style="text-align:center">SIMPRIM (Verilog Only)</th>
+<th style="text-align:center">SDF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Register Transfer Level (RTL) (Behavioral)</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">No</td>
+</tr>
+<tr>
+<td style="text-align:center">Post-Synthesis Simulation (Functional)</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">N/A</td>
+</tr>
+<tr>
+<td style="text-align:center">Post-Synthesis Simulation (Timing)</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">Yes</td>
+</tr>
+<tr>
+<td style="text-align:center">Post-Implementation Simulation (Functional)</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">N/A</td>
+</tr>
+<tr>
+<td style="text-align:center">Post- Implementation Simulation (Timing)</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center">Yes</td>
+</tr>
+</tbody>
+</table>
+<p>Note:</p>
+<p>Verilog SIMPRIMS_VER uses the same source as UNISIM with the addition of specify blocks for timing annotation. SIMPRIMS_VER is the logical library name to which the Verilog physical SIMPRIM is mapped.</p>
+<hr>
+<h3 id="41-unisim-library"><strong>4.1 UNISIM Library</strong></h3>
+<p>Functional simulation uses the UNISIM library and contains descriptions for device primitives or lowest-level building blocks.</p>
+<hr>
+<p>IMPORTANT! By default, the compile_simlib command compiles the static simulation files for all the IP's in the IP Catalog.</p>
+<hr>
+<p>IMPORTANT! Verilog module names and file names are uppercase. For example, module BUFG is BUFG.v, and module IBUF is IBUF.v. Ensure that UNISIM primitive instantiations adhere to an uppercase naming convention.</p>
+<hr>
+<p><strong>VHDL UNISIM Library</strong></p>
+<p>The VHDL UNISIM library is divided into the following files, which specify the primitives for the Xilinx device families:</p>
+<ul>
+<li>The component declarations (unisim_VCOMP.vhd)</li>
+<li>Package files (unisim_VPKG.vhd)</li>
+</ul>
+<hr>
+<p>IMPORTANT! You must also compile the library and map the library to the simulator. The method depends on the simulator.</p>
+<hr>
+<p><strong>Verilog UNISIM Library</strong></p>
+<p>In Verilog, the individual library modules are specified in separate HDL files. This allows the -y library specification switch to search the specified directory for all components and automatically expand the library.</p>
+<p>The Verilog UNISIM library cannot be specified in the HDL file prior to using the module. To use the library module, specify the module name using all uppercase letters.</p>
+<hr>
+<h3 id="42-unimacro-library"><strong>4.2 UNIMACRO Library</strong></h3>
+<p>The UNIMACRO library is used during functional simulation and contains macro descriptions for selected device primitives.</p>
+<p><strong>VHDL UNIMACRO Library</strong></p>
+<p>To use these primitives, place the following two lines at the beginning of each file:</p>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">library</span> UNIMACRO;
+<span class="hljs-keyword">use</span> UNIMACRO.Vcomponents.<span class="hljs-keyword">all</span>;
+</div></code></pre>
+<p><strong>Verilog UNIMACRO Library</strong></p>
+<p>In Verilog, the individual library modules are specified in separate HDL files. This allows the -y library specification switch to search the specified directory for all components and automatically expand the library.</p>
+<p>The Verilog UNIMACRO library does not need to be specified in the HDL file prior to using the modules as is required in VHDL. To use the library module, specify the module name using all uppercase letters. You must also compile and map the library; the method you use depends on the simulator you choose.</p>
+<hr>
+<h3 id="43-simprim-library"><strong>4.3 SIMPRIM Library</strong></h3>
+<p>Use the SIMPRIM library for simulating timing simulation netlists produced after synthesis or implementation.</p>
+<hr>
+<p>IMPORTANT! Timing simulation is supported in Verilog only; there is no VHDL version of the SIMPRIM library.</p>
+<hr>
+<p>TIP: If you are a VHDL user, you can run post synthesis and post implementation functional simulation (in which case no standard default format (SDF) annotation is required and the simulation netlist uses the UNISIM library). You can create the netlist using the write_vhdl Tcl command. For usage information, refer to the Vivado Design Suite Tcl Command Reference Guide (UG835).</p>
+<hr>
+<hr>
+<h3 id="44-secureip-simulation-library"><strong>4.4 SECUREIP Simulation Library</strong></h3>
+<p>Use the SECUREIP library for functional and timing simulation of complex device components, such as GT.</p>
+<p>Note:
+Secure IP Blocks are fully supported in the Vivado simulator without additional setup.</p>
+<p>Xilinx leverages the encryption methodology as specified in the IEEE standard Recommended Practice for Encryption and Management of Electronic Design Intellectual Property (IP) (IEEE-STDP1735). The library compilation process automatically handles encryption.</p>
+<p>Note:
+See the simulator documentation for the command line switch to use with your simulator to specify libraries.</p>
+<p>The following table lists special considerations that must be arranged with your simulator vendor for using these libraries.</p>
+<p>Special Considerations for Using SECUREIP Libraries:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Simulator Name</th>
+<th style="text-align:left">Vendor</th>
+<th style="text-align:left">Requirements</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">ModelSim SE  <br>ModelSim PE <br>ModelSim DE <br>Questa Advanced Simulator</td>
+<td style="text-align:left">Mentor Graphics</td>
+<td style="text-align:left">If design entry is in VHDL, a mixed language license or a SECUREIP OP is required. Contact the vendor for more information.</td>
+</tr>
+<tr>
+<td style="text-align:left">VCS and VCS MX</td>
+<td style="text-align:left">Synopsys</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">Active-HDL / Riviera-PRO*</td>
+<td style="text-align:left">Aldec</td>
+<td style="text-align:left">If design entry is VHDL only, a SECUREIP language-neutral license is required. Contact the vendor for more information.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>VHDL SECUREIP Library</strong></p>
+<p>The UNISIM library contains the wrappers for VHDL SECUREIP. Place the following two lines at the beginning of each file so that the simulator can bind to the entity:</p>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">Library</span> UNISIM;
+UNISIM.VCOMPONENTS.<span class="hljs-keyword">all</span>;
+
+</div></code></pre>
+<p><strong>Verilog SECUREIP Library</strong>
+When running a simulation using Verilog code, you must reference the SECUREIP library for most simulators.</p>
+<p><strong>UNIFAST Library</strong></p>
+<p>The UNIFAST library is an optional library that you can use during RTL behavioral simulation to speed up simulation run time.</p>
+<hr>
+<p>IMPORTANT! The UNIFAST library is an optional library that you can use during functional simulation to speed up simulation runtime. UNIFAST libraries are supported for 7 series devices only. UltraScale and later device architectures do not support UNIFAST libraries, as all the optimizations are incorporated in the UNISIM libraries by default. UNIFAST libraries cannot be used for sign-off simulations because the library components do not have all the checks/features that are available in a full model.</p>
+<hr>
+<p>RECOMMENDED: Use the UNIFAST library for initial verification of the design and then run a complete verification using the UNISIM library.</p>
+<hr>
+<p>The simulation run time improvement is achieved by supporting a subset of the primitive
+features in the simulation mode.</p>
+<p>Note: The simulation models check for unsupported attribute values only.</p>
+<p><strong>Using Verilog UNIFAST Library</strong></p>
+<p>To reduce the simulation runtimes, the fast GTXE2 simulation model has the following feature differences:</p>
+<ul>
+<li>GTX links must be of synchronous with no Parts Per Million (PPM) rate differences between the near and far end link partners.</li>
+<li>Latency through the GTX is not cycle accurate with the hardware operation.</li>
+</ul>
+<p><strong>Method 1: Using the complete Verilog UNIFAST library (Recommended)</strong></p>
+<p>Method 1 is the recommended method whereby you simulate with all the UNIFAST models.</p>
+<p>Use the following Tcl command in Tcl console to enable UNIFAST support (fast simulation models) in a Vivado project environment for the Vivado simulator, ModelSim, IES, or VCS:</p>
+<p><code>set_property unifast true [current_fileset –simset]</code></p>
+<p><strong>Method 2: Using specific UNIFAST modules</strong></p>
+<p>Recommended for more advanced users who want to specify which modules to simulate with the <code>UNIFAST</code> models.</p>
+<p>To specify individual library components, Verilog configuration statements are used. Specify the following in the <code>config.v</code> file:</p>
+<ul>
+<li>The name of the top-level module or configuration (for example: <code>config cfg_xilinx;</code>)</li>
+<li>The name to which the design configuration applies (for example: <code>design test bench;</code>)</li>
+<li>The library search order for cells or instances that are not explicitly called out (for example: <code>default liblist unisims_ver unifast_ver;</code>)</li>
+<li>The map for a particular CELL or INSTANCE to a particular library (For example: <code>instance testbench.inst.O1 use unifast_ver.MMCME2;</code>)</li>
+</ul>
+<p>Note: For ModelSim (vsim) only -genblk is added to hierarchy name. (For example: <code>instance testbench.genblk1.inst.genblk1.O1 use unifast_ver.MMCME2; - VSIM</code>)</p>
+<p>Example config.v</p>
+<pre><code class="language-VHDL"><div>config cfg_xilinx;
+design testbench;
+<span class="hljs-keyword">default</span> liblist unisims_ver unifast_ver;
+//<span class="hljs-keyword">Use</span> fast MMCM <span class="hljs-keyword">for</span> <span class="hljs-keyword">all</span> MMCM blocks <span class="hljs-keyword">in</span> design
+cell MMCME2 <span class="hljs-keyword">use</span> unifast_ver.MMCME2;
+//<span class="hljs-keyword">use</span> fast dSO48E1for only this specific instance <span class="hljs-keyword">in</span> the design
+instance testbench.inst.O1 <span class="hljs-keyword">use</span> unifast_ver.DSP48E1;
+//<span class="hljs-keyword">If</span> using ModelSim <span class="hljs-keyword">or</span> Questa, add <span class="hljs-keyword">in</span> the genblk <span class="hljs-keyword">to</span> the name
+(instance testbench.genblk1.inst.genblk1.O1 <span class="hljs-keyword">use</span> unifast_ver.DSP48E1)
+endconfig
+</div></code></pre>
+<p><strong>Using VHDL UNIFAST Library</strong></p>
+<p>The VHDL UNIFAST library has the same basic structure as Verilog and can be used with architectures or libraries. You can include the library in the test bench file.</p>
+<p>The following example uses a drill-down hierarchy with a <code>for</code> call:</p>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">library</span> unisim;
+<span class="hljs-keyword">library</span> unifast;
+<span class="hljs-keyword">configuration</span> cfg_xilinx <span class="hljs-keyword">of</span> testbench
+<span class="hljs-keyword">is</span> <span class="hljs-keyword">for</span> xilinx
+.. <span class="hljs-keyword">for</span> inst:netlist
+. . . <span class="hljs-keyword">use</span> <span class="hljs-keyword">entity</span> work.netlist(inst);
+.......<span class="hljs-keyword">for</span> inst
+.........<span class="hljs-keyword">for</span> <span class="hljs-keyword">all</span>:MMCME2
+..........<span class="hljs-keyword">use</span> <span class="hljs-keyword">entity</span> unifast.MMCME2;
+.........<span class="hljs-keyword">end</span> <span class="hljs-keyword">for</span>;
+.......<span class="hljs-keyword">for</span> O1 inst:DSP48E1;
+.........<span class="hljs-keyword">use</span> <span class="hljs-keyword">entity</span> unifast.DSP48E1;
+.......<span class="hljs-keyword">end</span> <span class="hljs-keyword">for</span>;
+...<span class="hljs-keyword">end</span> <span class="hljs-keyword">for</span>;
+..<span class="hljs-keyword">end</span> <span class="hljs-keyword">for</span>;
+<span class="hljs-keyword">end</span> <span class="hljs-keyword">for</span>;
+<span class="hljs-keyword">end</span> cfg_xilinx;
+
+</div></code></pre>
+<p>Note: If you want to use a VHDL UNIFAST model, you have to use a configuration to bind the UNIFAST library during elaboration.</p>
+<hr>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Properity</th>
+<th style="text-align:left">Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">position</td>
+<td style="text-align:left">post</td>
+</tr>
+<tr>
+<td style="text-align:left">title</td>
+<td style="text-align:left">Xilinx simulation libraries</td>
+</tr>
+<tr>
+<td style="text-align:left">date</td>
+<td style="text-align:left">2020年11月23日20点31分</td>
+</tr>
+<tr>
+<td style="text-align:left">author</td>
+<td style="text-align:left">Lim</td>
+</tr>
+<tr>
+<td style="text-align:left">tags</td>
+<td style="text-align:left">Simulation</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<hr>
+
+    </body>
+    </html>
