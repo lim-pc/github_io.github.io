@@ -322,20 +322,17 @@ The following example uses a drill-down hierarchy with a `for` call:
 ```VHDL
 library unisim;
 library unifast;
-configuration cfg_xilinx of testbench
-is for xilinx
-.. for inst:netlist
-. . . use entity work.netlist(inst);
-.......for inst
-.........for all:MMCME2
-..........use entity unifast.MMCME2;
-.........end for;
-.......for O1 inst:DSP48E1;
-.........use entity unifast.DSP48E1;
-.......end for;
-...end for;
-..end for;
-end for;
+configuration cfg_xilinx of testbench is for xilinx
+... for inst:netlist
+....... use entity work.netlist(inst);
+....... for inst
+........... for all:MMCME2
+............... use entity unifast.MMCME2;
+........... end for;
+....... for O1 inst:DSP48E1;
+........... use entity unifast.DSP48E1;
+....... end for;
+... end for;
 end cfg_xilinx;
 
 ```
